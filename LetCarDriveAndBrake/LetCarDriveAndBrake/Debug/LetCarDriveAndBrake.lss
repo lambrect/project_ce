@@ -1,0 +1,225 @@
+
+LetCarDriveAndBrake.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00800100  00000164  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000110  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .comment      00000030  00000000  00000000  00000164  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000194  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000040  00000000  00000000  000001d4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000007d3  00000000  00000000  00000214  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000006cc  00000000  00000000  000009e7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000346  00000000  00000000  000010b3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000064  00000000  00000000  000013fc  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000003d4  00000000  00000000  00001460  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000030  00000000  00000000  00001834  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   8:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  40:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  44:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  48:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  4c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  50:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  54:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  58:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  5c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  60:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  64:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+  74:	0e 94 63 00 	call	0xc6	; 0xc6 <main>
+  78:	0c 94 86 00 	jmp	0x10c	; 0x10c <_exit>
+
+0000007c <__bad_interrupt>:
+  7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000080 <initPWM>:
+#define LEFT2 PORTB0	// Datasheet R_CTRL_2
+
+
+void initPWM()
+{
+	DDRD |= (1<< PORTD5); //set PORTD pin5 as an output (left motor) speed
+  80:	55 9a       	sbi	0x0a, 5	; 10
+	DDRD |= (1 << PORTD6);// set PORTD pin6 as an output (right motor)speed
+  82:	56 9a       	sbi	0x0a, 6	; 10
+	TCCR0A |= (1 << COM0A1);// set none-inverting mode for OCR0A
+  84:	84 b5       	in	r24, 0x24	; 36
+  86:	80 68       	ori	r24, 0x80	; 128
+  88:	84 bd       	out	0x24, r24	; 36
+	TCCR0A |= (1 << COM0B1);// set none-inverting mode for OCR0B
+  8a:	84 b5       	in	r24, 0x24	; 36
+  8c:	80 62       	ori	r24, 0x20	; 32
+  8e:	84 bd       	out	0x24, r24	; 36
+	TCCR0A |= (1 << WGM01) | (1 << WGM00);// set fast PWM Mode
+  90:	84 b5       	in	r24, 0x24	; 36
+  92:	83 60       	ori	r24, 0x03	; 3
+  94:	84 bd       	out	0x24, r24	; 36
+	TCCR0B |= (1 << CS01);// sets prescaler to 8 and starts PWM
+  96:	85 b5       	in	r24, 0x25	; 37
+  98:	82 60       	ori	r24, 0x02	; 2
+  9a:	85 bd       	out	0x25, r24	; 37
+  9c:	08 95       	ret
+
+0000009e <motorDirection>:
+}
+
+// sets the direction for the car
+void motorDirection(uint8_t direction)
+{
+	if(direction) // if it's not 0 drive forward
+  9e:	88 23       	and	r24, r24
+  a0:	29 f0       	breq	.+10     	; 0xac <motorDirection+0xe>
+	{
+		PORTD |= (1<<RIGHT1);		//set D2 to high
+  a2:	5a 9a       	sbi	0x0b, 2	; 11
+		PORTD &= ~(1<<RIGHT2);		//set D4 to low 
+  a4:	5c 98       	cbi	0x0b, 4	; 11
+		PORTD |= (1<<LEFT1);		//set D7 to high 
+  a6:	5f 9a       	sbi	0x0b, 7	; 11
+		PORTB &= ~(1<<LEFT2);		//set B0 to low	
+  a8:	28 98       	cbi	0x05, 0	; 5
+  aa:	08 95       	ret
+	}
+	else{
+		//drive backwards
+		PORTD &= ~(1<<RIGHT1);	//set D2 to low 
+  ac:	5a 98       	cbi	0x0b, 2	; 11
+		PORTD |= (1<<RIGHT2);	//set D4 to high
+  ae:	5c 9a       	sbi	0x0b, 4	; 11
+		PORTD &= ~(1<<LEFT1);	//set D7 to low
+  b0:	5f 98       	cbi	0x0b, 7	; 11
+		PORTB |= (1<<LEFT2);	//set B0 to high
+  b2:	28 9a       	sbi	0x05, 0	; 5
+  b4:	08 95       	ret
+
+000000b6 <brake>:
+}
+
+
+void brake(){
+	//set all to high to brake
+	PORTD |= (1<<RIGHT1);	//set D2 to high
+  b6:	5a 9a       	sbi	0x0b, 2	; 11
+	PORTD |= (1<<RIGHT2);	//set D4 to high
+  b8:	5c 9a       	sbi	0x0b, 4	; 11
+	PORTD |= (1<<LEFT1);	//set B0 to high
+  ba:	5f 9a       	sbi	0x0b, 7	; 11
+	PORTB |= (1<<LEFT2);	//set D7 to high
+  bc:	28 9a       	sbi	0x05, 0	; 5
+  be:	08 95       	ret
+
+000000c0 <initButton>:
+}
+
+// Initialize the Button on the Robot Car
+void initButton(){
+	DDRB &= ~(1<< PORTB4);	// set PORTB pin4 as an input
+  c0:	24 98       	cbi	0x04, 4	; 4
+	PORTB |= 1<< PORTB4;	// default state is high
+  c2:	2c 9a       	sbi	0x05, 4	; 5
+  c4:	08 95       	ret
+
+000000c6 <main>:
+}
+
+int main(void)
+{
+	initButton();	//initialize Button
+  c6:	0e 94 60 00 	call	0xc0	; 0xc0 <initButton>
+	initPWM();		//initialize PWM
+  ca:	0e 94 40 00 	call	0x80	; 0x80 <initPWM>
+	while (1) 
+    {
+			while((PINB & (1<<PINB4))); // wait till Button pressed and PINB4 is grounded, then leave the while and move on to the next step
+			motorDirection(1); //direction forwards
+			OCR0A=128;	// right motor power
+  ce:	c0 e8       	ldi	r28, 0x80	; 128
+{
+	initButton();	//initialize Button
+	initPWM();		//initialize PWM
+	while (1) 
+    {
+			while((PINB & (1<<PINB4))); // wait till Button pressed and PINB4 is grounded, then leave the while and move on to the next step
+  d0:	1c 99       	sbic	0x03, 4	; 3
+  d2:	fe cf       	rjmp	.-4      	; 0xd0 <main+0xa>
+			motorDirection(1); //direction forwards
+  d4:	81 e0       	ldi	r24, 0x01	; 1
+  d6:	0e 94 4f 00 	call	0x9e	; 0x9e <motorDirection>
+			OCR0A=128;	// right motor power
+  da:	c7 bd       	out	0x27, r28	; 39
+			OCR0B=128; // left motor power
+  dc:	c8 bd       	out	0x28, r28	; 40
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  de:	2f ef       	ldi	r18, 0xFF	; 255
+  e0:	87 ea       	ldi	r24, 0xA7	; 167
+  e2:	91 e6       	ldi	r25, 0x61	; 97
+  e4:	21 50       	subi	r18, 0x01	; 1
+  e6:	80 40       	sbci	r24, 0x00	; 0
+  e8:	90 40       	sbci	r25, 0x00	; 0
+  ea:	e1 f7       	brne	.-8      	; 0xe4 <main+0x1e>
+  ec:	00 c0       	rjmp	.+0      	; 0xee <main+0x28>
+  ee:	00 00       	nop
+			_delay_ms(2000);  // 
+			while((PINB & (1<<PINB4))); // press Button again for hitting the brakes
+  f0:	1c 99       	sbic	0x03, 4	; 3
+  f2:	fe cf       	rjmp	.-4      	; 0xf0 <main+0x2a>
+			brake();
+  f4:	0e 94 5b 00 	call	0xb6	; 0xb6 <brake>
+  f8:	2f ef       	ldi	r18, 0xFF	; 255
+  fa:	83 ed       	ldi	r24, 0xD3	; 211
+  fc:	90 e3       	ldi	r25, 0x30	; 48
+  fe:	21 50       	subi	r18, 0x01	; 1
+ 100:	80 40       	sbci	r24, 0x00	; 0
+ 102:	90 40       	sbci	r25, 0x00	; 0
+ 104:	e1 f7       	brne	.-8      	; 0xfe <main+0x38>
+ 106:	00 c0       	rjmp	.+0      	; 0x108 <main+0x42>
+ 108:	00 00       	nop
+ 10a:	e2 cf       	rjmp	.-60     	; 0xd0 <main+0xa>
+
+0000010c <_exit>:
+ 10c:	f8 94       	cli
+
+0000010e <__stop_program>:
+ 10e:	ff cf       	rjmp	.-2      	; 0x10e <__stop_program>
